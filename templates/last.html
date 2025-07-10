@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Favorite Girl</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff6fa1;
+            opacity: 0.6;
+            animation: floatHeart 6s linear infinite;
+            font-size: 20px;
+        }
+
+        .heart::before {
+            content: "♥";
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            max-width: 500px;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out;
+            position: relative;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message {
+            font-size: 1.4rem;
+            color: #6b4c6b;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            animation: typewriter 3s steps(50) 1s both;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #ff6fa1;
+        }
+
+        @keyframes typewriter {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        .signature {
+            font-size: 1.1rem;
+            color: #ff6fa1;
+            font-weight: 600;
+            margin-top: 30px;
+            opacity: 0;
+            animation: fadeIn 1s ease-in 4s both;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            color: #ffd700;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Music button styles */
+        #musicBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6fa1, #ff9ec7);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        #musicBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        #musicBtn.playing {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+        }
+        
+        /* Audio controls */
+        #musicControls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.85);
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #ff6fa1;
+            transition: transform 0.2s;
+        }
+        
+        .control-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        #volumeControl {
+            width: 100px;
+            accent-color: #ff6fa1;
+        }
+        
+        .music-note {
+            position: absolute;
+            font-size: 1.2rem;
+            opacity: 0;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-bg"></div>
+    
+    <!-- Music button -->
+    <button id="musicBtn" title="Play Music">🎵</button>
+    
+    <div class="container">
+        <div class="sparkle" style="top: 10px; right: 20px;">✨</div>
+        <div class="sparkle" style="bottom: 15px; left: 25px; animation-delay: 1s;">⭐</div>
+        <div class="sparkle" style="top: 50%; right: 10px; animation-delay: 0.5s;">💫</div>
+        
+        <p class="message">
+            You're the sunshine that brightens my darkest days and the reason my heart smiles. Your laugh is my favorite melody, your presence my greatest comfort. Thank you for being the most amazing person in my world, my favorite girl.
+        </p>
+        
+        <div class="signature">
+            With all my love 💕
+        </div>
+    </div>
+    
+    <!-- Audio element -->
+    <audio id="music" loop>
+    <source src="{{ url_for('static', filename='audio/happy-tune.ogg') }}" type="audio/mpeg">
+</audio>
+    
+    <!-- Music controls -->
+    <div id="musicControls" style="display: none;">
+        <button class="control-btn" id="playPauseBtn">⏯️</button>
+        <button class="control-btn" id="restartBtn">↺</button>
+        <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.7">
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const heartsContainer = document.querySelector('.hearts-bg');
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (4 + Math.random() * 3) + 's';
+                heart.style.fontSize = (16 + Math.random() * 10) + 'px';
+                heartsContainer.appendChild(heart);
+                
+                // Remove heart after animation
+                setTimeout(() => {
+                    heart.remove();
+                }, 6000);
+            }, 800);
+
+            
+        }
+
+        // Music player functionality
+        const musicBtn = document.getElementById('musicBtn');
+        const music = document.getElementById('birthdayMusic');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const volumeControl = document.getElementById('volumeControl');
+        const musicControls = document.getElementById('musicControls');
+        
+        // Play/pause toggle
+        musicBtn.addEventListener('click', function() {
+            if (music.paused) {
+                music.play();
+                musicBtn.textContent = '🎶';
+                musicBtn.classList.add('playing');
+                musicControls.style.display = 'flex';
+                createMusicNotes();
+            } else {
+                music.pause();
+                musicBtn.textContent = '🎵';
+                musicBtn.classList.remove('playing');
+            }
+        });
+        
+        // Play/pause control
+        playPauseBtn.addEventListener('click', function() {
+            if (music.paused) {
+                music.play();
+                musicBtn.textContent = '🎶';
+                musicBtn.classList.add('playing');
+            } else {
+                music.pause();
+                musicBtn.textContent = '🎵';
+                musicBtn.classList.remove('playing');
+            }
+        });
+        
+        // Restart button
+        restartBtn.addEventListener('click', function() {
+            music.currentTime = 0;
+            if (music.paused) {
+                music.play();
+                musicBtn.textContent = '🎶';
+                musicBtn.classList.add('playing');
+            }
+        });
+        
+        // Volume control
+        volumeControl.addEventListener('input', function() {
+            music.volume = this.value;
+        });
+        
+        // Create floating music notes when music plays
+        function createMusicNotes() {
+            const notes = ['🎵', '🎶', '🎼', '🎹', '🎷', '🎺', '🎸', '🎻'];
+            const container = document.querySelector('.hearts-bg');
+            
+            setInterval(() => {
+                if (!music.paused) {
+                    const note = document.createElement('div');
+                    note.className = 'music-note';
+                    note.textContent = notes[Math.floor(Math.random() * notes.length)];
+                    note.style.left = Math.random() * 100 + 'vw';
+                    note.style.fontSize = (20 + Math.random() * 15) + 'px';
+                    note.style.animation = `floatNote ${3 + Math.random() * 3}s linear forwards`;
+                    container.appendChild(note);
+                    
+                    // Remove note after animation
+                    setTimeout(() => {
+                        note.remove();
+                    }, 6000);
+                }
+            }, 500);
+            
+            // Add keyframes for note animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes floatNote {
+                    0% {
+                        transform: translateY(100vh) rotate(0deg);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 0.8;
+                    }
+                    90% {
+                        opacity: 0.8;
+                    }
+                    100% {
+                        transform: translateY(-100px) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Start creating hearts after page load
+        window.addEventListener('load', createHearts);
+        window.addEventListener('load', function() {
+        const music = document.getElementById('music');
+        const wasPlaying = sessionStorage.getItem('audioPlaying') === 'true';
+        const storedTime = parseFloat(sessionStorage.getItem('audioTime')) || 0;
+        
+        // Restore playback state
+        if (wasPlaying) {
+            music.currentTime = storedTime;
+            music.play().catch(e => console.log('Audio resume failed:', e));
+            
+            // Update UI to show playing state
+            musicBtn.textContent = '🎶';
+            musicBtn.classList.add('playing');
+            musicControls.style.display = 'flex';
+            createMusicNotes();
+        }
+
+        // Clear stored state
+        sessionStorage.removeItem('audioPlaying');
+        sessionStorage.removeItem('audioTime');
+    });
+    </script>
+</body>
+</html>

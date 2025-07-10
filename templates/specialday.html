@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Day</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, #e8d5e8 0%, #f0e6f0 50%, #d8c5d8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative background dots */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.4) 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, rgba(255, 182, 193, 0.4) 2px, transparent 2px),
+                radial-gradient(circle at 30% 80%, rgba(255, 182, 193, 0.4) 2px, transparent 2px),
+                radial-gradient(circle at 70% 70%, rgba(255, 182, 193, 0.4) 2px, transparent 2px),
+                radial-gradient(circle at 90% 90%, rgba(255, 182, 193, 0.4) 2px, transparent 2px);
+            background-size: 200px 200px, 300px 300px, 250px 250px, 180px 180px, 220px 220px;
+            pointer-events: none;
+        }
+
+        /* Floating hearts background */
+        .hearts-bg {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -30px;
+            color: #ff6fa1;
+            opacity: 0.7;
+            animation: floatHeart linear infinite;
+            user-select: none;
+            will-change: transform, opacity;
+        }
+
+        .heart::before {
+            content: "♥";
+            display: block;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(0) scale(1) rotate(-10deg);
+                opacity: 0.7;
+            }
+            70% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-110vh) scale(1.2) rotate(10deg);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
+        .container {
+            width: 80vw;
+            max-width: 320px;
+            min-height: 24vh;
+            padding: 3vh 2vw;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Content wrapper for positioning */
+        .content-wrapper {
+            position: relative;
+            width: 100%;
+            height: 12vh;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Special icon */
+        .special-icon {
+            width: 7vw;
+            min-width: 32px;
+            max-width: 48px;
+            height: 7vw;
+            min-height: 32px;
+            max-height: 48px;
+            margin-bottom: 2vh;
+            border-radius: 50%;
+            background: none;
+            display: block;
+            object-fit: contain;
+            animation: none;
+        }
+
+        /* Text messages */
+        .message {
+            font-size: clamp(1.1rem, 2vw, 1.6rem); /* Responsive, but never too big */
+            margin-bottom: 2vh;
+            color: #6b4c6b;
+            font-weight: 600;
+            line-height: 1.4;
+            opacity: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 1s ease-in-out;
+            width: 90%; /* Prevents overflow */
+            max-width: 95vw;
+            text-align: center;
+            word-break: break-word;
+            hyphens: auto;
+        }
+
+        .message.active {
+            opacity: 1;
+        }
+
+        .message.fade-out {
+            opacity: 0;
+        }
+
+        /* Form buttons */
+        .button-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .button-container.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-yes {
+            background: linear-gradient(45deg, #ff6fa1, #ff9ec7);
+            color: white;
+        }
+
+        .btn-yes:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 111, 161, 0.4);
+        }
+
+        .btn-no {
+            background: linear-gradient(45deg, #9a9a9a, #c0c0c0);
+            color: white;
+        }
+
+        .btn-no:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(154, 154, 154, 0.4);
+        }
+
+        /* Response message */
+        .response-message {
+            font-size: 2rem;
+            color: #6b4c6b;
+            font-weight: 600;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .response-message.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Toast message */
+        #toast {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(31, 41, 55, 0.9);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            transition: opacity 0.5s ease;
+            opacity: 0;
+        }
+
+        #toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 90%;
+                padding: 40px 20px;
+            }
+            
+            .message {
+                font-size: 2rem;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .message {
+                font-size: 1.6rem;
+            }
+            
+            .special-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .response-message {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-bg"></div>
+    
+    <div class="container">
+        <img src="{{ url_for('static', filename='images/icon-special-features.png') }}" alt="Special Icon" class="special-icon" />
+        <div class="content-wrapper">
+            <h1 id="text1" class="message">It's Your Special Day YeYeYe!</h1>
+            <h1 id="text2" class="message">To make something special for you!</h1>
+            <h1 id="text3" class="message">Ready?</h1>
+            <h1 id="text4" class="message">Have a look at this, madam jii</h1>
+        </div>
+        <!-- Change the form action -->
+        <form id="responseForm" class="button-container" action="/continue_music" method="post">
+            <button type="submit" class="btn btn-yes" name="response" value="yes">Yes</button>
+            <button type="button" class="btn btn-no" id="noBtn">No</button>
+        </form>
+        <div id="no-message" class="flash-message" style="display:none;color:#fff;background:#ff1744;font-weight:600;border-radius:8px;padding:8px 16px;margin-top:18px;text-align:center;">
+            This option is not available, Madam jii
+        </div>
+        <div id="responseMessage" class="response-message"></div>
+    </div>
+
+    <!-- Toast message for flashed messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div id="toast"
+             class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded shadow-lg z-50 transition-opacity duration-500 opacity-100">
+          {{ messages[0] }}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <script>
+
+        // Generate floating hearts
+        function createFloatingHearts() {
+            const heartsContainer = document.querySelector('.hearts-bg');
+            
+            for (let i = 0; i < 18; i++) {
+                const heart = document.createElement('span');
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (3 + Math.random() * 3) + 's';
+                heart.style.animationDelay = (Math.random() * 4) + 's';
+                const size = 16 + Math.random() * 18;
+                heart.style.fontSize = size + 'px';
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        // Text sequence animation
+        function startTextSequence() {
+            const text1 = document.getElementById('text1');
+            const text2 = document.getElementById('text2');
+            const text3 = document.getElementById('text3');
+            const form = document.getElementById('responseForm');
+
+            // Show first text
+            setTimeout(() => {
+                text1.classList.add('active');
+            }, 500);
+
+            // Transition to second text
+            setTimeout(() => {
+                text1.classList.add('fade-out');
+                setTimeout(() => {
+                    text2.classList.add('active');
+                }, 500);
+            }, 3000);
+
+            // Transition to third text with buttons
+            setTimeout(() => {
+                text2.classList.add('fade-out');
+                setTimeout(() => {
+                    text3.classList.add('active');
+                    setTimeout(() => {
+                        form.classList.add('active');
+                    }, 500);
+                }, 500);
+            }, 6000);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            createFloatingHearts();
+            startTextSequence();
+
+            // Remove response message on submit, just submit the form
+            document.getElementById('responseForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Fade out text3 and buttons
+                document.getElementById('text3').classList.remove('active');
+                document.getElementById('text3').classList.add('fade-out');
+                document.getElementById('responseForm').classList.remove('active');
+                document.getElementById('responseForm').classList.add('fade-out');
+                // Fade in text4
+                setTimeout(() => {
+                    document.getElementById('text4').classList.add('active');
+                    // After 3 seconds, redirect
+                    setTimeout(() => {
+                        window.location.href = "{{ url_for('see_this') }}";
+                    }, 3000);
+                }, 600); // Wait for fade out
+            });
+
+            // Hide toast after 3 seconds
+            const toast = document.getElementById('toast');
+            if (toast) {
+                setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                    setTimeout(() => toast.remove(), 500);
+                }, 3000);
+            }
+
+            // Handle No button click
+            document.getElementById('noBtn').addEventListener('click', function() {
+                const noMessage = document.getElementById('no-message');
+                noMessage.style.display = 'block';
+                setTimeout(() => {
+                    noMessage.style.display = 'none';
+                }, 3000);
+            });
+        });
+        msgForm.addEventListener('submit', function(e) {
+        // Save playback state
+        sessionStorage.setItem('audioPlaying', !music.paused);
+        sessionStorage.setItem('audioTime', music.currentTime);
+        });
+    </script>
+</body>
+
+</html>
