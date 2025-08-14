@@ -272,9 +272,9 @@
         <div class="sparkle" style="bottom: 15px; left: 25px; animation-delay: 1s;">⭐</div>
         <div class="sparkle" style="top: 50%; right: 10px; animation-delay: 0.5s;">💫</div>
         
-        <p class="message">
-            You're the sunshine that brightens my darkest days and the reason my heart smiles. Your laugh is my favorite melody, your presence my greatest comfort. Thank you for being the most amazing person in my world, my favorite girl.
-        </p>
+        <div class="message" id="typedMessage"></div>
+
+
         
         <div class="signature">
             With all my love 💕
@@ -294,6 +294,42 @@
     </div>
 
     <script>
+
+            const messageLines = [
+        "Ever since you came into my life, everything feels brighter.",
+        "Your smile lifts my spirits and your laughter is pure joy.",
+        "I'm so grateful for your love and for every moment we share.",
+        "You truly make me a better person, and I’m lucky to have you by my side."
+    ];
+
+    function typeLines(lines, elementId, lineDelay = 700, charDelay = 30) {
+        const el = document.getElementById(elementId);
+        let lineIdx = 0;
+        let charIdx = 0;
+        el.innerHTML = "";
+
+        function typeChar() {
+            if (lineIdx < lines.length) {
+                if (charIdx < lines[lineIdx].length) {
+                    el.innerHTML += lines[lineIdx][charIdx];
+                    charIdx++;
+                    setTimeout(typeChar, charDelay);
+                } else {
+                    el.innerHTML += "<br>";
+                    lineIdx++;
+                    charIdx = 0;
+                    setTimeout(typeChar, lineDelay);
+                }
+            }
+        }
+        typeChar();
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        typeLines(messageLines, "typedMessage");
+    });
+
+
         // Create floating hearts
         function createHearts() {
             const heartsContainer = document.querySelector('.hearts-bg');
