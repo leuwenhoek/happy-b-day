@@ -220,9 +220,48 @@
             opacity: 0;
             z-index: 10;
         }
+
+        #moving-photos-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .moving-photo-bg {
+            position: absolute;
+            width: 180px;
+            height: 120px;
+            object-fit: cover;
+            filter: blur(10px) brightness(1.1);
+            opacity: 0.45;
+            border-radius: 18px;
+            animation: movePhotoBg 18s linear infinite;
+        }
+        @keyframes movePhotoBg {
+            0% {
+                left: 100vw;
+                opacity: 0.45;
+            }
+            10% {
+                opacity: 0.55;
+            }
+            90% {
+                opacity: 0.55;
+            }
+            100% {
+                left: -200px;
+                opacity: 0.45;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Moving blurry photos background -->
+    <div id="moving-photos-bg"></div>
     <div class="hearts-bg"></div>
     
     <!-- Music button -->
@@ -372,7 +411,51 @@
             document.head.appendChild(style);
         }
         
-        // Start creating hearts after page load
+        // Opacity variable for moving photos
+        let photoOpacity = 10;
+
+        // Moving blurry photos background
+        const photoFiles = [
+            "https://iili.io/FD9WVjf.md.jpg",
+            "https://iili.io/FD9WMTG.md.jpg",
+            "https://iili.io/FD9WWQ4.md.jpg",
+            "https://iili.io/FD9WEps.md.jpg",
+            "https://iili.io/FD9WjG2.md.jpg",
+            "https://iili.io/FD9Wea9.md.jpg"
+        ];
+        const movingBg = document.getElementById('moving-photos-bg');
+        function createMovingPhotos() {
+            for (let i = 0; i < photoFiles.length; i++) {
+                const img = document.createElement('img');
+                img.src = photoFiles[i];
+                img.className = 'moving-photo-bg';
+                img.style.top = (10 + i * 15) + 'vh';
+                img.style.left = '100vw';
+                img.style.animationDelay = (i * 2) + 's';
+                img.style.opacity = photoOpacity;
+                movingBg.appendChild(img);
+            }
+        }
+        createMovingPhotos();
+
+        // Hide photos when they reach the message block
+        function hidePhotosOnOverlap() {
+            const container = document.querySelector('.container');
+            const containerRect = container.getBoundingClientRect();
+            const images = document.querySelectorAll('.moving-photo-bg');
+            images.forEach(img => {
+                const imgRect = img.getBoundingClientRect();
+                // If right edge of image is less than left edge of container, hide it
+                if (imgRect.right < containerRect.left) {
+                    img.style.opacity = '0';
+                } else {
+                    img.style.opacity = photoOpacity;
+                }
+            });
+            requestAnimationFrame(hidePhotosOnOverlap);
+        }
+        window.addEventListener('DOMContentLoaded', hidePhotosOnOverlap);
+
         window.addEventListener('load', createHearts);
         window.addEventListener('load', function() {
             const music = document.getElementById('birthdayMusic');
