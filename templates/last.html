@@ -88,19 +88,17 @@
             font-weight: 500;
             line-height: 1.6;
             margin-bottom: 20px;
-            animation: typewriter 3s steps(50) 1s both;
+            /* Remove typewriter animation and nowrap */
             overflow: hidden;
-            white-space: nowrap;
             border-right: 2px solid #ff6fa1;
+            min-height: 7em; /* Reserve space for 4 lines */
+            /* Optional: blinking cursor */
+            animation: blink-cursor 1s steps(1) infinite;
         }
 
-        @keyframes typewriter {
-            from {
-                width: 0;
-            }
-            to {
-                width: 100%;
-            }
+        @keyframes blink-cursor {
+            0%, 100% { border-color: #ff6fa1; }
+            50% { border-color: transparent; }
         }
 
         .signature {
