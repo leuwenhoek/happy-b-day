@@ -312,6 +312,9 @@
       {% endif %}
     {% endwith %}
 
+    <!-- Music button -->
+    <button id="musicBtn" title="Play Music" style="position:fixed;top:20px;right:20px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#ff6fa1,#ff9ec7);border:none;color:white;font-size:1.5rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;z-index:100;transition:transform 0.3s,box-shadow 0.3s;">🎵</button>
+
     <script>
 
         // Generate floating hearts
@@ -402,11 +405,79 @@
                     noMessage.style.display = 'none';
                 }, 3000);
             });
-        });
-        msgForm.addEventListener('submit', function(e) {
-        // Save playback state
-        sessionStorage.setItem('audioPlaying', !music.paused);
-        sessionStorage.setItem('audioTime', music.currentTime);
+
+            // Music player functionality
+            const musicBtn = document.getElementById('musicBtn');
+            const music = document.getElementById('birthdayMusic');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const volumeControl = document.getElementById('volumeControl');
+            const musicControls = document.getElementById('musicControls');
+
+            // Play/pause toggle
+            musicBtn.addEventListener('click', function() {
+                if (music.paused) {
+                    music.play();
+                    musicBtn.textContent = '🎶';
+                    musicBtn.classList.add('playing');
+                    musicControls.style.display = 'flex';
+                } else {
+                    music.pause();
+                    musicBtn.textContent = '🎵';
+                    musicBtn.classList.remove('playing');
+                }
+            });
+
+            // Play/pause control
+            playPauseBtn.addEventListener('click', function() {
+                if (music.paused) {
+                    music.play();
+                    musicBtn.textContent = '🎶';
+                    musicBtn.classList.add('playing');
+                } else {
+                    music.pause();
+                    musicBtn.textContent = '🎵';
+                    musicBtn.classList.remove('playing');
+                }
+            });
+
+            // Restart button
+            restartBtn.addEventListener('click', function() {
+                music.currentTime = 0;
+                if (music.paused) {
+                    music.play();
+                    musicBtn.textContent = '🎶';
+                    musicBtn.classList.add('playing');
+                }
+            });
+
+            // Volume control
+            volumeControl.addEventListener('input', function() {
+                music.volume = this.value;
+            });
+
+            // Restore playback state if coming from previous page
+            window.addEventListener('load', function() {
+                const wasPlaying = sessionStorage.getItem('audioPlaying') === 'true';
+                const storedTime = parseFloat(sessionStorage.getItem('audioTime')) || 0;
+                if (wasPlaying) {
+                    music.currentTime = storedTime;
+                    music.play().catch(e => {});
+                    musicBtn.textContent = '🎶';
+                    musicBtn.classList.add('playing');
+                    musicControls.style.display = 'flex';
+                }
+                sessionStorage.removeItem('audioPlaying');
+                sessionStorage.removeItem('audioTime');
+            });
+
+            // Save playback state on form submit
+            const msgForm = document.getElementById('responseForm');
+            msgForm.addEventListener('submit', function(e) {
+                // Save playback state
+                sessionStorage.setItem('audioPlaying', !music.paused);
+                sessionStorage.setItem('audioTime', music.currentTime);
+            });
         });
     </script>
 </body>

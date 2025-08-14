@@ -244,7 +244,7 @@
     
     <!-- Audio element -->
     <audio id="birthdayMusic" loop>
-    <source src="{{ url_for('static', filename='audio/happy-tune.ogg') }}" type="audio/mpeg">
+    <source src="{{ url_for('static', filename='audio2.mp3') }}" type="audio/mpeg">
 </audio>
     
     <!-- Music controls -->
@@ -375,26 +375,23 @@
         // Start creating hearts after page load
         window.addEventListener('load', createHearts);
         window.addEventListener('load', function() {
-        const music = document.getElementById('music');
-        const wasPlaying = sessionStorage.getItem('audioPlaying') === 'true';
-        const storedTime = parseFloat(sessionStorage.getItem('audioTime')) || 0;
-        
-        // Restore playback state
-        if (wasPlaying) {
-            music.currentTime = storedTime;
-            music.play().catch(e => console.log('Audio resume failed:', e));
-            
-            // Update UI to show playing state
-            musicBtn.textContent = '🎶';
-            musicBtn.classList.add('playing');
-            musicControls.style.display = 'flex';
-            createMusicNotes();
-        }
+            const music = document.getElementById('birthdayMusic');
+            const musicBtn = document.getElementById('musicBtn');
+            const musicControls = document.getElementById('musicControls');
+            const wasPlaying = sessionStorage.getItem('audioPlaying') === 'true';
+            const storedTime = parseFloat(sessionStorage.getItem('audioTime')) || 0;
 
-        // Clear stored state
-        sessionStorage.removeItem('audioPlaying');
-        sessionStorage.removeItem('audioTime');
-    });
+            if (wasPlaying) {
+                music.currentTime = storedTime;
+                music.play().catch(e => {});
+                musicBtn.textContent = '🎶';
+                musicBtn.classList.add('playing');
+                musicControls.style.display = 'flex';
+            }
+
+            sessionStorage.removeItem('audioPlaying');
+            sessionStorage.removeItem('audioTime');
+        });
     </script>
 </body>
 </html>
